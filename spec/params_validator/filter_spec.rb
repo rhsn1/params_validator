@@ -10,7 +10,7 @@ describe ParamsValidator::Filter do
     ParamsValidator::Validator::TypeInteger.should_receive(:valid?).with(42) { true }
     ParamsValidator::Filter.validate_params(
       { 'field_name' => 42 },
-      { :field_name => { :with => [:type_integer] } }
+      { :field_name => { :_with => [:type_integer] } }
     )
   end
 
@@ -18,7 +18,7 @@ describe ParamsValidator::Filter do
     ParamsValidator::Validator::TypeFloat.should_receive(:valid?).with(4.2) { true }
     ParamsValidator::Filter.validate_params(
       { 'field_name' => 4.2 },
-      { :field_name => { :with => [:type_float] } }
+      { :field_name => { :_with => [:type_float] } }
     )
   end
 
@@ -26,7 +26,7 @@ describe ParamsValidator::Filter do
     ParamsValidator::Validator::TypeString.should_receive(:valid?).with('a string') { true }
     ParamsValidator::Filter.validate_params(
       { 'field_name' => 'a string' },
-      { :field_name => { :with => [:type_string] } }
+      { :field_name => { :_with => [:type_string] } }
     )
   end
 
@@ -34,7 +34,7 @@ describe ParamsValidator::Filter do
     ParamsValidator::Validator::TypeHash.should_receive(:valid?).with({}) { true }
     ParamsValidator::Filter.validate_params(
       { 'field_name' => {} },
-      { :field_name => { :with => [:type_hash] } }
+      { :field_name => { :_with => [:type_hash] } }
     )
   end
 
@@ -42,7 +42,7 @@ describe ParamsValidator::Filter do
     ParamsValidator::Validator::TypeArray.should_receive(:valid?).with([]) { true }
     ParamsValidator::Filter.validate_params(
       { 'field_name' => [] },
-      { :field_name => { :with => [:type_array] } }
+      { :field_name => { :_with => [:type_array] } }
     )
   end
 
@@ -50,7 +50,7 @@ describe ParamsValidator::Filter do
     ParamsValidator::Validator::Presence.should_receive(:valid?).with('a string') { true }
     ParamsValidator::Filter.validate_params(
       { 'field_name' => 'a string' },
-      { :field_name => { :with => [:presence] } }
+      { :field_name => { :_with => [:presence] } }
     )
   end
 
@@ -59,7 +59,7 @@ describe ParamsValidator::Filter do
     lambda do
       ParamsValidator::Filter.validate_params(
         { 'field_name' => 42 },
-        { :field_name => { :with => [:type_integer] } }
+        { :field_name => { :_with => [:type_integer] } }
       )
     end.should raise_error ParamsValidator::InvalidParamsException
   end
@@ -68,7 +68,7 @@ describe ParamsValidator::Filter do
     lambda do
       ParamsValidator::Filter.validate_params(
         { 'field_name' => 42 },
-        { :field_name => { :with => [:type_invalid] } }
+        { :field_name => { :_with => [:type_invalid] } }
       )
     end.should raise_error ParamsValidator::InvalidValidatorException
   end

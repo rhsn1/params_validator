@@ -5,7 +5,7 @@ module ParamsValidator
     def self.validate_params(params, definition)
       errors = {}
       definition.each do |field, validation_definition|
-        validation_definition[:with].each do |validator_name|
+        validation_definition[:_with].each do |validator_name|
           camelized_validator_name = self.camelize(validator_name)
           begin
             validator = constantize("ParamsValidator::Validator::#{camelized_validator_name}")

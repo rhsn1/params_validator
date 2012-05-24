@@ -19,7 +19,7 @@ Basic usage:
         render :text => 'Error', :status => :bad_request
       end
 
-      validate_params_for :index, { :count => { :with => [:type_integer] } }
+      validate_params_for :index, { :count => { :_with => [:type_integer] } }
       def index
         @articles = Article.limit(params[:count])
       end
@@ -29,7 +29,7 @@ Basic usage:
 
 ### TypeInteger
 
-    validate_params_for :index, { :count => { :with => [:type_integer] } }
+    validate_params_for :index, { :count => { :_with => [:type_integer] } }
 
 **Valid:**
 
@@ -43,7 +43,7 @@ Basic usage:
 
 ### TypeFloat
 
-    validate_params_for :index, { :position => { :with => [:type_float] } }
+    validate_params_for :index, { :position => { :_with => [:type_float] } }
 
 **Valid:**
 
@@ -58,7 +58,7 @@ Basic usage:
 
 ### TypeString
 
-    validate_params_for :index, { :name => { :with => [:type_string] } }
+    validate_params_for :index, { :name => { :_with => [:type_string] } }
 
 **Valid:**
 
@@ -72,7 +72,7 @@ Basic usage:
 
 ### TypeHash
 
-    validate_params_for :index, { :options => { :with => [:type_hash] } }
+    validate_params_for :index, { :options => { :_with => [:type_hash] } }
 
 **Valid:**
 
@@ -85,7 +85,7 @@ Basic usage:
 
 ### TypeArray
 
-    validate_params_for :index, { :ids => { :with => [:type_array] } }
+    validate_params_for :index, { :ids => { :_with => [:type_array] } }
 
 **Valid:**
 
@@ -98,7 +98,7 @@ Basic usage:
 
 ### Presence
 
-    validate_params_for :search, { :q => { :with => [:presence] } }
+    validate_params_for :search, { :q => { :_with => [:presence] } }
 
 **Valid:**
 
