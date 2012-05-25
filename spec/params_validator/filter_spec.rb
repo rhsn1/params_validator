@@ -1,10 +1,5 @@
 require 'spec_helper'
 
-class TestActionController < ActionController::Base
-  include ::ParamsValidator::ClassMethods
-  validate_params_for :index, { :q => { :required => true } }
-end
-
 describe ParamsValidator::Filter do
   it 'should call Integer validator' do
     ParamsValidator::Validator::TypeInteger.should_receive(:valid?).with(42) { true }
@@ -71,6 +66,46 @@ describe ParamsValidator::Filter do
         { :field_name => { :_with => [:type_invalid] } }
       )
     end.should raise_error ParamsValidator::InvalidValidatorException
+  end
+
+  context 'nested fields' do
+    it 'should allow nested parameters' do
+      ParamsValidator::Validator::TypeInteger.should_receive(:valid?).with(1) { true }
+      ParamsValidator::Validator::TypeFloat.should_receive(:valid?).with(2.0) { true }
+      ParamsValidator::Filter.validate_params(
+        { 'level_1' => { 'integer_field' => 1, 'float_field' => 2.0 } },
+        { :level_1 => { :_with => [:type_hash],
+                        :integer_field => { :_with => [:type_integer] },
+                        :float_field => { :_with => [:type_float] } } }
+      )
+    end
+
+    it 'should not fail when parent param has no _with item' do
+      lambda do
+        ParamsValidator::Filter.validate_params(
+          { 'level_1' => { 'integer_field' => 1 } },
+          { :level_1 => { :integer_field => { :_with => [:type_integer] } } }
+        )
+      end.should_not raise_error
+    end
+
+    it 'should not raise when parent param is no hash' do
+      lambda do
+        ParamsValidator::Filter.validate_params(
+          { 'level_1' => 1 },
+          { 'level_1' => { :integer_field => { :_with => [:type_integer] } } }
+        )
+      end.should_not raise_error
+    end
+
+    it 'should raise when nested is required but parent param is no hash' do
+      lambda do
+        ParamsValidator::Filter.validate_params(
+          { 'level_1' => 1 },
+          { 'level_1' => { :integer_field => { :_with => [:presence] } } }
+        )
+      end.should raise_error ParamsValidator::InvalidParamsException
+    end
   end
 end
 
