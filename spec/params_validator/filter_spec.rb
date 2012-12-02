@@ -106,6 +106,35 @@ describe ParamsValidator::Filter do
         )
       end.should raise_error ParamsValidator::InvalidParamsException
     end
+
+    it 'should allow unlimited nested parameters' do
+      defs = {
+        :l1 => {
+          :_with => [:type_hash],
+          :l2 => {
+            :_with => [:presence, :type_hash],
+            :i => { :_with => [:type_integer] },
+            :l3 => {
+              :_with => [:presence, :type_hash],
+              :f => { :_with => [:type_float] },
+            }
+          }
+        }
+      }
+      lambda do
+        ParamsValidator::Filter.validate_params(
+          { 'l1' => { 'l2' => { 'i' => 1, 'l3' => { 'f' => 2.0 } } } },
+          defs
+        )
+      end.should_not raise_error
+      lambda do
+        ParamsValidator::Filter.validate_params(
+          { 'l1' => { 'l2' => { 'i' => 1, 'l3' => { } } } },
+          defs
+        )
+      end.should raise_error ParamsValidator::InvalidParamsException
+    end
+
   end
 end
 

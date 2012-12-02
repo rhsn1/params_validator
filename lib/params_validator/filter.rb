@@ -5,10 +5,10 @@ module ParamsValidator
     def self.validate_params(params, definition)
       errors = {}
       definition.each do |field, validation_definition|
-        errors = validate_field(field, params, validation_definition, errors)
+        errors = validate_field(field, params, validation_definition[:_with], errors)
 
         validation_definition.reject {|k,v| k == :_with }.each do |nested_field, nested_validation_definition|
-          errors = validate_field(nested_field, params[field.to_s], nested_validation_definition, errors)
+          validate_params(params[field.to_s], { nested_field => nested_validation_definition })
         end
       end
       if errors.count > 0
@@ -20,9 +20,9 @@ module ParamsValidator
 
     private
 
-    def self.validate_field(field, params, validation_definition, errors)
-      return errors unless validation_definition.has_key? :_with
-      validation_definition[:_with].each do |validator_name|
+    def self.validate_field(field, params, validators, errors)
+      return errors unless validators
+      validators.each do |validator_name|
         camelized_validator_name = self.camelize(validator_name)
         begin
           validator = constantize("ParamsValidator::Validator::#{camelized_validator_name}")
