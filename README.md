@@ -108,6 +108,20 @@ Basic usage:
 
 * `q=`
 * `somethingelse=term`
+* 
+
+### Whitelist
+
+    validate_params_for :search, { :type => { :_with => [:whitelist], :_whitelist: [:documents, :pictures], :_default: :documents } }
+
+**Valid:**
+
+* `type=documents`
+* `type=pictures`
+
+**Invalid:**
+
+* `type=unicorns`
 
 ## Validation errors
 
