@@ -50,7 +50,9 @@ describe ParamsValidator::Filter do
   end
 
   it 'should call Whitelist constructor' do
-    ParamsValidator::Validator::Whitelist.should_receive(:new).with(kind_of(Hash)) { ParamsValidator::Validator::Whitelist.allocate }
+    whitelist = double(ParamsValidator::Validator::Whitelist)
+    whitelist.stub(:valid?) { true }
+    ParamsValidator::Validator::Whitelist.should_receive(:new).with(kind_of(Hash)) { whitelist }
     ParamsValidator::Filter.validate_params(
       { 'field_name' => 'a string' },
       { :field_name => { :_with => [:whitelist] } }
