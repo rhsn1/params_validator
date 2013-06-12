@@ -16,11 +16,7 @@ module ParamsValidator
           sanitize_params(params[field.to_s], { nested_field => nested_validation_definition })
         end
       end
-      if errors.count > 0
-        exception = InvalidParamsException.new
-        exception.errors = errors
-        raise exception
-      end
+      raise InvalidParamsException.new(errors) unless errors.empty?
       self.params
     end
 
