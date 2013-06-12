@@ -13,6 +13,7 @@ module ParamsValidator
       end
 
       def error_message
+        'is invalid'
       end
 
       def valid?(value)
