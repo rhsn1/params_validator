@@ -4,8 +4,8 @@ module ParamsValidator
       attr_reader :default
 
       def initialize(definition)
-        @default = definition.delete(:_default)
-        @whitelist = definition.delete(:_whitelist).map(&:to_s).to_set
+        @default = definition[:_default]
+        @whitelist = definition[:_whitelist].map(&:to_s).to_set
       end
 
       def default?
