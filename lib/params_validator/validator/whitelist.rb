@@ -1,7 +1,7 @@
 module ParamsValidator
   module Validator
     class Whitelist
-      def initialize(validation_definition)
+      def initialize(definition)
       end
 
       def error_message
