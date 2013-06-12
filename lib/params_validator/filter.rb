@@ -6,14 +6,14 @@ module ParamsValidator
       attr_accessor :params
     end
 
-    def self.validate_params(params, definition)
+    def self.sanitize_params(params, definition)
       send('params=', params)
       errors = {}
       definition.each do |field, validation_definition|
         errors = validate_field(field, validation_definition, errors)
 
         validation_definition.reject {|k,v| reserved_keys.include?(k) }.each do |nested_field, nested_validation_definition|
-          validate_params(params[field.to_s], { nested_field => nested_validation_definition })
+          sanitize_params(params[field.to_s], { nested_field => nested_validation_definition })
         end
       end
       if errors.count > 0

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe ParamsValidator::Filter do
   it 'should call Integer validator' do
     ParamsValidator::Validator::TypeInteger.should_receive(:valid?).with(42) { true }
-    ParamsValidator::Filter.validate_params(
+    ParamsValidator::Filter.sanitize_params(
       { 'field_name' => 42 },
       { :field_name => { :_with => [:type_integer] } }
     )
@@ -11,7 +11,7 @@ describe ParamsValidator::Filter do
 
   it 'should call Float validator' do
     ParamsValidator::Validator::TypeFloat.should_receive(:valid?).with(4.2) { true }
-    ParamsValidator::Filter.validate_params(
+    ParamsValidator::Filter.sanitize_params(
       { 'field_name' => 4.2 },
       { :field_name => { :_with => [:type_float] } }
     )
@@ -19,7 +19,7 @@ describe ParamsValidator::Filter do
 
   it 'should call String validator' do
     ParamsValidator::Validator::TypeString.should_receive(:valid?).with('a string') { true }
-    ParamsValidator::Filter.validate_params(
+    ParamsValidator::Filter.sanitize_params(
       { 'field_name' => 'a string' },
       { :field_name => { :_with => [:type_string] } }
     )
@@ -27,7 +27,7 @@ describe ParamsValidator::Filter do
 
   it 'should call Hash validator' do
     ParamsValidator::Validator::TypeHash.should_receive(:valid?).with({}) { true }
-    ParamsValidator::Filter.validate_params(
+    ParamsValidator::Filter.sanitize_params(
       { 'field_name' => {} },
       { :field_name => { :_with => [:type_hash] } }
     )
@@ -35,7 +35,7 @@ describe ParamsValidator::Filter do
 
   it 'should call Array validator' do
     ParamsValidator::Validator::TypeArray.should_receive(:valid?).with([]) { true }
-    ParamsValidator::Filter.validate_params(
+    ParamsValidator::Filter.sanitize_params(
       { 'field_name' => [] },
       { :field_name => { :_with => [:type_array] } }
     )
@@ -43,7 +43,7 @@ describe ParamsValidator::Filter do
 
   it 'should call Presence validator' do
     ParamsValidator::Validator::Presence.should_receive(:valid?).with('a string') { true }
-    ParamsValidator::Filter.validate_params(
+    ParamsValidator::Filter.sanitize_params(
       { 'field_name' => 'a string' },
       { :field_name => { :_with => [:presence] } }
     )
@@ -53,7 +53,7 @@ describe ParamsValidator::Filter do
     whitelist = double(ParamsValidator::Validator::Whitelist)
     whitelist.stub(:valid?) { true }
     ParamsValidator::Validator::Whitelist.should_receive(:new).with(kind_of(Hash)) { whitelist }
-    ParamsValidator::Filter.validate_params(
+    ParamsValidator::Filter.sanitize_params(
       { 'field_name' => 'a string' },
       { :field_name => { :_with => [:whitelist] } }
     )
@@ -63,7 +63,7 @@ describe ParamsValidator::Filter do
     whitelist = double(ParamsValidator::Validator::Whitelist)
     whitelist.should_receive(:valid?).with('a string') { true }
     ParamsValidator::Validator::Whitelist.should_receive(:new) { whitelist }
-    ParamsValidator::Filter.validate_params(
+    ParamsValidator::Filter.sanitize_params(
       { 'field_name' => 'a string' },
       { :field_name => { :_with => [:whitelist] } }
     )
@@ -72,7 +72,7 @@ describe ParamsValidator::Filter do
   it 'should raise InvalidParamsException when validator returns false' do
     ParamsValidator::Validator::TypeInteger.stub(:valid?) { false }
     lambda do
-      ParamsValidator::Filter.validate_params(
+      ParamsValidator::Filter.sanitize_params(
         { 'field_name' => 42 },
         { :field_name => { :_with => [:type_integer] } }
       )
@@ -80,7 +80,7 @@ describe ParamsValidator::Filter do
   end
 
   it 'should not raise InvalidParamsException when a validator has a default value' do
-    ParamsValidator::Filter.validate_params(
+    ParamsValidator::Filter.sanitize_params(
         { 'field_name' => 'a' },
         { :field_name => { :_with => [:whitelist], :_whitelist => [:b], :_default => :c } }
     )
@@ -88,7 +88,7 @@ describe ParamsValidator::Filter do
 
   it 'should raise InvalidValidatorException when invalid filter name is used' do
     lambda do
-      ParamsValidator::Filter.validate_params(
+      ParamsValidator::Filter.sanitize_params(
         { 'field_name' => 42 },
         { :field_name => { :_with => [:type_invalid] } }
       )
@@ -99,7 +99,7 @@ describe ParamsValidator::Filter do
     it 'should allow nested parameters' do
       ParamsValidator::Validator::TypeInteger.should_receive(:valid?).with(1) { true }
       ParamsValidator::Validator::TypeFloat.should_receive(:valid?).with(2.0) { true }
-      ParamsValidator::Filter.validate_params(
+      ParamsValidator::Filter.sanitize_params(
         { 'level_1' => { 'integer_field' => 1, 'float_field' => 2.0 } },
         { :level_1 => { :_with => [:type_hash],
                         :integer_field => { :_with => [:type_integer] },
@@ -109,7 +109,7 @@ describe ParamsValidator::Filter do
 
     it 'should not fail when parent param has no _with item' do
       lambda do
-        ParamsValidator::Filter.validate_params(
+        ParamsValidator::Filter.sanitize_params(
           { 'level_1' => { 'integer_field' => 1 } },
           { :level_1 => { :integer_field => { :_with => [:type_integer] } } }
         )
@@ -118,7 +118,7 @@ describe ParamsValidator::Filter do
 
     it 'should not raise when parent param is no hash' do
       lambda do
-        ParamsValidator::Filter.validate_params(
+        ParamsValidator::Filter.sanitize_params(
           { 'level_1' => 1 },
           { 'level_1' => { :integer_field => { :_with => [:type_integer] } } }
         )
@@ -127,7 +127,7 @@ describe ParamsValidator::Filter do
 
     it 'should raise when nested is required but parent param is no hash' do
       lambda do
-        ParamsValidator::Filter.validate_params(
+        ParamsValidator::Filter.sanitize_params(
           { 'level_1' => 1 },
           { 'level_1' => { :integer_field => { :_with => [:presence] } } }
         )
@@ -149,13 +149,13 @@ describe ParamsValidator::Filter do
         }
       }
       lambda do
-        ParamsValidator::Filter.validate_params(
+        ParamsValidator::Filter.sanitize_params(
           { 'l1' => { 'l2' => { 'i' => 1, 'l3' => { 'f' => 2.0 } } } },
           defs
         )
       end.should_not raise_error
       lambda do
-        ParamsValidator::Filter.validate_params(
+        ParamsValidator::Filter.sanitize_params(
           { 'l1' => { 'l2' => { 'i' => 1, 'l3' => { } } } },
           defs
         )
