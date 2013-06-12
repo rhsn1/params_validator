@@ -49,6 +49,24 @@ describe ParamsValidator::Filter do
     )
   end
 
+  it 'should call Whitelist constructor' do
+    ParamsValidator::Validator::Whitelist.should_receive(:new).with(kind_of(Hash)) { ParamsValidator::Validator::Whitelist.allocate }
+    ParamsValidator::Filter.validate_params(
+      { 'field_name' => 'a string' },
+      { :field_name => { :_with => [:whitelist] } }
+    )
+  end
+
+  it 'should call Whitelist validator' do
+    whitelist = double(ParamsValidator::Validator::Whitelist)
+    whitelist.should_receive(:valid?).with('a string') { true }
+    ParamsValidator::Validator::Whitelist.should_receive(:new) { whitelist }
+    ParamsValidator::Filter.validate_params(
+      { 'field_name' => 'a string' },
+      { :field_name => { :_with => [:whitelist] } }
+    )
+  end
+
   it 'should raise InvalidParamsException when validator returns false' do
     ParamsValidator::Validator::TypeInteger.stub(:valid?) { false }
     lambda do
