@@ -2,7 +2,9 @@ require 'spec_helper'
 
 describe ParamsValidator::Filter do
   it 'should call Integer validator' do
-    ParamsValidator::Validator::TypeInteger.should_receive(:valid?).with(42) { true }
+    integer = double(ParamsValidator::Validator::TypeInteger)
+    integer.should_receive(:valid?).with(42) { true }
+    ParamsValidator::Validator::TypeInteger.stub(:new) { integer }
     ParamsValidator::Filter.sanitize_params(
       { 'field_name' => 42 },
       { :field_name => { :_with => [:type_integer] } }
@@ -10,7 +12,9 @@ describe ParamsValidator::Filter do
   end
 
   it 'should call Float validator' do
-    ParamsValidator::Validator::TypeFloat.should_receive(:valid?).with(4.2) { true }
+    float = double(ParamsValidator::Validator::TypeFloat)
+    float.should_receive(:valid?).with(4.2) { true }
+    ParamsValidator::Validator::TypeFloat.stub(:new) { float }
     ParamsValidator::Filter.sanitize_params(
       { 'field_name' => 4.2 },
       { :field_name => { :_with => [:type_float] } }
@@ -18,7 +22,9 @@ describe ParamsValidator::Filter do
   end
 
   it 'should call String validator' do
-    ParamsValidator::Validator::TypeString.should_receive(:valid?).with('a string') { true }
+    string = double(ParamsValidator::Validator::TypeString)
+    string.should_receive(:valid?).with('a string') { true }
+    ParamsValidator::Validator::TypeString.stub(:new) { string }
     ParamsValidator::Filter.sanitize_params(
       { 'field_name' => 'a string' },
       { :field_name => { :_with => [:type_string] } }
@@ -26,15 +32,19 @@ describe ParamsValidator::Filter do
   end
 
   it 'should call Hash validator' do
-    ParamsValidator::Validator::TypeHash.should_receive(:valid?).with({}) { true }
+    hash = double(ParamsValidator::Validator::TypeHash)
+    hash.should_receive(:valid?).with({}) { true }
+    ParamsValidator::Validator::TypeHash.stub(:new) { hash }
     ParamsValidator::Filter.sanitize_params(
       { 'field_name' => {} },
       { :field_name => { :_with => [:type_hash] } }
     )
   end
 
-  it 'should call Array validator' do
-    ParamsValidator::Validator::TypeArray.should_receive(:valid?).with([]) { true }
+  it 'should call Array validatou' do
+    array = double(ParamsValidator::Validator::TypeArray)
+    array.should_receive(:valid?).with([]) { true }
+    ParamsValidator::Validator::TypeArray.stub(:new) { array }
     ParamsValidator::Filter.sanitize_params(
       { 'field_name' => [] },
       { :field_name => { :_with => [:type_array] } }
@@ -42,7 +52,9 @@ describe ParamsValidator::Filter do
   end
 
   it 'should call Presence validator' do
-    ParamsValidator::Validator::Presence.should_receive(:valid?).with('a string') { true }
+    presence = double(ParamsValidator::Validator::Presence)
+    presence.should_receive(:valid?).with('a string') { true }
+    ParamsValidator::Validator::Presence.stub(:new) { presence }
     ParamsValidator::Filter.sanitize_params(
       { 'field_name' => 'a string' },
       { :field_name => { :_with => [:presence] } }
@@ -70,7 +82,10 @@ describe ParamsValidator::Filter do
   end
 
   it 'should raise InvalidParamsException when validator returns false' do
-    ParamsValidator::Validator::TypeInteger.stub(:valid?) { false }
+    integer = double(ParamsValidator::Validator::TypeInteger)
+    integer.stub(:error_message) { '' }
+    integer.stub(:valid?) { false }
+    ParamsValidator::Validator::TypeInteger.stub(:new) { integer }
     lambda do
       ParamsValidator::Filter.sanitize_params(
         { 'field_name' => 42 },
@@ -99,8 +114,12 @@ describe ParamsValidator::Filter do
 
   context 'nested fields' do
     it 'should allow nested parameters' do
-      ParamsValidator::Validator::TypeInteger.should_receive(:valid?).with(1) { true }
-      ParamsValidator::Validator::TypeFloat.should_receive(:valid?).with(2.0) { true }
+      integer = double(ParamsValidator::Validator::TypeInteger)
+      integer.should_receive(:valid?).with(1) { true }
+      ParamsValidator::Validator::TypeInteger.stub(:new) { integer }
+      float = double(ParamsValidator::Validator::TypeFloat)
+      float.should_receive(:valid?).with(2.0) { true }
+      ParamsValidator::Validator::TypeFloat.stub(:new) { float }
       ParamsValidator::Filter.sanitize_params(
         { 'level_1' => { 'integer_field' => 1, 'float_field' => 2.0 } },
         { :level_1 => { :_with => [:type_hash],
