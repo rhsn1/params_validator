@@ -4,12 +4,12 @@ module ParamsValidator
       attr_reader :default
 
       def initialize(definition)
-        @default = definition[:_default]
+        @default = definition[:_default] if definition.key?(:_default)
         @whitelist = definition[:_whitelist].map(&:to_s).to_set
       end
 
       def default?
-        !default.nil?
+        instance_variable_defined?('@default')
       end
 
       def error_message
