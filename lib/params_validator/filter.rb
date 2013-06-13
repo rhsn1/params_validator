@@ -32,7 +32,7 @@ module ParamsValidator
       validators.each do |validator_name|
         camelized_validator_name = self.camelize(validator_name)
         begin
-          validator = constantize("ParamsValidator::Validator::#{camelized_validator_name}")
+          validator = ParamsValidator::Validator.const_get(camelized_validator_name)
           validator = validator.new(validation_definition) if validator.instance_of?(Class)
           value = params.is_a?(Hash) ? params[field.to_s] : nil
           unless validator.valid?(value)
