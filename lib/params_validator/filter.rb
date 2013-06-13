@@ -7,7 +7,7 @@ module ParamsValidator
     end
 
     def self.sanitize_params(params, definition)
-      send('params=', params)
+      self.params = params
       errors = {}
       definition.each do |field, validation_definition|
         errors = validate_field(field, validation_definition, errors)
