@@ -33,7 +33,7 @@ module ParamsValidator
         camelized_validator_name = self.camelize(validator_name)
         begin
           validator = ParamsValidator::Validator.const_get(camelized_validator_name)
-          validator = validator.new(validation_definition) if validator.instance_of?(Class)
+          validator = validator.new(validation_definition)
           value = params.is_a?(Hash) ? params[field.to_s] : nil
           unless validator.valid?(value)
             if validator.respond_to?(:default?) && validator.default?
