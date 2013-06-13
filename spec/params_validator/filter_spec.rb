@@ -80,10 +80,12 @@ describe ParamsValidator::Filter do
   end
 
   it 'should not raise InvalidParamsException when a validator has a default value' do
-    ParamsValidator::Filter.sanitize_params(
+    expect do
+      ParamsValidator::Filter.sanitize_params(
         { 'field_name' => 'a' },
         { :field_name => { :_with => [:whitelist], :_whitelist => [:b], :_default => :c } }
-    )
+      )
+    end.to_not raise_error(ParamsValidator::InvalidParamsException)
   end
 
   it 'should raise InvalidValidatorException when invalid filter name is used' do
