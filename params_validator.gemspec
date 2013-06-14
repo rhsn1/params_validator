@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "params_validator"
-  s.version = "0.2.0"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christof Dorner"]
-  s.date = "2012-05-25"
+  s.date = "2013-06-14"
   s.email = "christof@chdorner.me"
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -21,13 +21,15 @@ Gem::Specification.new do |s|
     "lib/params_validator/filter.rb",
     "lib/params_validator/railtie.rb",
     "lib/params_validator/validator.rb",
+    "lib/params_validator/validator/base.rb",
     "lib/params_validator/validator/presence.rb",
-    "lib/params_validator/validator/type.rb"
+    "lib/params_validator/validator/type.rb",
+    "lib/params_validator/validator/whitelist.rb"
   ]
   s.homepage = "https://github.com/chdorner/params_validator"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.11"
+  s.rubygems_version = "1.8.23"
   s.summary = "A DSL for validating request parameters, raises exceptions when validation failed. Currently only supports Rails."
 
   if s.respond_to? :specification_version then
@@ -36,7 +38,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rails>, [">= 3.0.0"])
       s.add_development_dependency(%q<rspec>, ["~> 2.9.0"])
-      s.add_development_dependency(%q<yard>, ["~> 0.7"])
+      s.add_development_dependency(%q<yard>, ["~> 0.8"])
       s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_development_dependency(%q<bundler>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.3"])
@@ -47,7 +49,7 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<rails>, [">= 3.0.0"])
       s.add_dependency(%q<rspec>, ["~> 2.9.0"])
-      s.add_dependency(%q<yard>, ["~> 0.7"])
+      s.add_dependency(%q<yard>, ["~> 0.8"])
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_dependency(%q<bundler>, [">= 0"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
@@ -59,7 +61,7 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<rails>, [">= 3.0.0"])
     s.add_dependency(%q<rspec>, ["~> 2.9.0"])
-    s.add_dependency(%q<yard>, ["~> 0.7"])
+    s.add_dependency(%q<yard>, ["~> 0.8"])
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
     s.add_dependency(%q<bundler>, [">= 0"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
