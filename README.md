@@ -1,4 +1,4 @@
-# params_validator [![Continuous Integration](https://secure.travis-ci.org/chdorner/epubinfo.png?branch=master)](https://secure.travis-ci.org/chdorner/params_validator) [![Dependencies](https://gemnasium.com/chdorner/epubinfo.png)](https://gemnasium.com/chdorner/params_validator)
+# params_validator [![Continuous Integration](https://secure.travis-ci.org/chdorner/params_validator.png?branch=master)](https://secure.travis-ci.org/chdorner/params_validator)
 
 A DSL for validating request parameters, raises exceptions when validation failed. Currently only supports Rails.
 
@@ -108,7 +108,6 @@ Basic usage:
 
 * `q=`
 * `somethingelse=term`
-* 
 
 ### Whitelist
 
@@ -141,7 +140,7 @@ As briefly described in the example at the beginning, the easiest way to rescue 
     end
 
 ## Contributing to params_validator
- 
+
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
 * Fork the project.
@@ -152,6 +151,6 @@ As briefly described in the example at the beginning, the easiest way to rescue 
 
 ## Copyright
 
-Copyright (c) 2012 Christof Dorner. See LICENSE.txt for
+Copyright (c) 2013 Christof Dorner. See LICENSE.txt for
 further details.
 
