@@ -183,6 +183,21 @@ describe ParamsValidator::Filter do
       end.should raise_error ParamsValidator::InvalidParamsException
     end
 
+    it 'should sanitize nested parameters' do
+      santizied_params = ParamsValidator::Filter.sanitize_params(
+        { 'field_name' => { 'field_name' => 42 }},
+        { :field_name => { :_with => [:type_hash], :field_name => { :_with => [:type_integer] }}}
+      )
+      santizied_params.should == { 'field_name' => { 'field_name' => 42 }}
+    end
+
+    it 'should sanitize nested symbol parameters' do
+      santizied_params = ParamsValidator::Filter.sanitize_params(
+        { :field_name => { :field_name => 42 }},
+        { :field_name => { :_with => [:type_hash], :field_name => { :_with => [:type_integer] }}}
+      )
+      santizied_params.should == { :field_name => { :field_name => 42 }}
+    end
   end
 end
 
