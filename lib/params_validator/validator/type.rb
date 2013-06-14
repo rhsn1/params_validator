@@ -1,50 +1,49 @@
 module ParamsValidator
   module Validator
+    class Type < Base
+      def error_message
+        "is not of type #{type}"
+      end
 
-    private
+      def valid?(value)
+        true unless Presence.new.valid?(value)
+      end
 
-    module Base
       private
-      def define_type_validator(type_name, &block)
-        @type_name = type_name
-        @block = block
 
-        def self.error_message
-          "is not of type #{@type_name.to_s.downcase}"
-        end
-
-        def self.valid?(value)
-          return true unless Presence.valid?(value)
-          return !!@block.call(value) rescue false
-        end
+      def type
+        self.class.to_s.split(/type/i).last.downcase
       end
     end
 
-    public
-
-    module TypeInteger
-      extend Base
-      define_type_validator('integer') { |value| Integer(value) }
+    class TypeInteger < Type
+      def valid?(value)
+        super || !!Integer(value) rescue false
+      end
     end
 
-    module TypeFloat
-      extend Base
-      define_type_validator('float') { |value| Float(value) }
+    class TypeFloat < Type
+      def valid?(value)
+        super || !!Float(value) rescue false
+      end
     end
 
-    module TypeString
-      extend Base
-      define_type_validator('string') { |value| value.kind_of? String }
+    class TypeString < Type
+      def valid?(value)
+        super || value.kind_of?(String)
+      end
     end
 
-    module TypeArray
-      extend Base
-      define_type_validator('array') { |value| value.kind_of? Array }
+    class TypeArray < Type
+      def valid?(value)
+        super || value.kind_of?(Array)
+      end
     end
 
-    module TypeHash
-      extend Base
-      define_type_validator('hash') { |value| value.kind_of? Hash }
+    class TypeHash < Type
+      def valid?(value)
+        super || value.kind_of?(Hash)
+      end
     end
   end
 end

@@ -4,7 +4,13 @@ Bundler.require(:default)
 module ParamsValidator
   class InvalidValidatorException < Exception; end
   class InvalidParamsException < Exception
-    attr_accessor :errors
+    attr_reader :errors
+
+    def initialize(errors)
+      @errors = errors
+
+      super()
+    end
   end
 end
 

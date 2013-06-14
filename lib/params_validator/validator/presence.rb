@@ -1,9 +1,11 @@
 module ParamsValidator
   module Validator
-    module Presence
-      def self.error_message; "is empty"; end
+    class Presence < Base
+      def error_message
+        'is empty'
+      end
 
-      def self.valid?(value)
+      def valid?(value)
         value.present?
       end
     end

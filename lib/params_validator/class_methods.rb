@@ -14,7 +14,8 @@ module ParamsValidator
         action_filter_name = "validate_params_for_action_#{action}".to_sym
 
         define_method(action_filter_name) do
-          Filter::validate_params(params, definition)
+          sanitized_params = Filter.sanitize_params(params, definition)
+          request.parameters.merge!(sanitized_params)
         end
         self.before_filter action_filter_name, :only => action
       end
