@@ -2,22 +2,17 @@ module ParamsValidator
   module Filter
     extend ActiveSupport::Inflector
 
-    class << self
-      attr_accessor :params
-    end
-
     def self.sanitize_params(params, definition)
-      self.params = params
       errors = {}
       definition.each do |field, validation_definition|
-        errors = validate_field(field, validation_definition, errors)
+        errors = validate_field(field, params, validation_definition, errors)
 
         validation_definition.reject {|k,v| reserved_keys.include?(k) }.each do |nested_field, nested_validation_definition|
           sanitize_params(params[field.to_s], { nested_field => nested_validation_definition })
         end
       end
       raise InvalidParamsException.new(errors) unless errors.empty?
-      self.params
+      params
     end
 
     private
@@ -26,7 +21,7 @@ module ParamsValidator
       @reserved_keys ||= [:_default, :_whitelist, :_with].to_set
     end
 
-    def self.validate_field(field, validation_definition, errors)
+    def self.validate_field(field, params, validation_definition, errors)
       validators = validation_definition[:_with]
       return errors unless validators
       validators.each do |validator_name|
