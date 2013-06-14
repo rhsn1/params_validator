@@ -196,7 +196,7 @@ describe ParamsValidator::Filter do
         { :field_name => { :field_name => 42 }},
         { :field_name => { :_with => [:type_hash], :field_name => { :_with => [:type_integer] }}}
       )
-      santizied_params.should == { 'field_name' => { 'field_name' => 42 }}
+      santizied_params.should == { :field_name => { :field_name => 42 }}
     end
   end
 end
